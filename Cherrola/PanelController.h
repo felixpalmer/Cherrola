@@ -1,5 +1,6 @@
 #import "BackgroundView.h"
 #import "StatusItemView.h"
+#import "Timer.h"
 
 @class PanelController;
 
@@ -13,13 +14,14 @@
 
 #pragma mark -
 
-@interface PanelController : NSWindowController <NSWindowDelegate>
+@interface PanelController : NSWindowController <NSWindowDelegate, TimerDelegate>
 {
-    BOOL _hasActivePanel;
-    __unsafe_unretained BackgroundView *_backgroundView;
-    __unsafe_unretained id<PanelControllerDelegate> _delegate;
-    __unsafe_unretained NSSearchField *_searchField;
-    __unsafe_unretained NSTextField *_textField;
+  BOOL _hasActivePanel;
+  __unsafe_unretained BackgroundView *_backgroundView;
+  __unsafe_unretained id<PanelControllerDelegate> _delegate;
+  __unsafe_unretained NSSearchField *_searchField;
+  __unsafe_unretained NSTextField *_textField;
+  Timer *_timer;
 }
 
 @property (nonatomic, unsafe_unretained) IBOutlet BackgroundView *backgroundView;
