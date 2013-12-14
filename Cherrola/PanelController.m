@@ -3,14 +3,16 @@
 #import "StatusItemView.h"
 #import "MenubarController.h"
 
-#define OPEN_DURATION .15
+#define OPEN_DURATION .4
 #define CLOSE_DURATION .1
 
 #define SEARCH_INSET 17
 
-#define POPUP_HEIGHT 122
-#define PANEL_WIDTH 280
-#define MENU_ANIMATION_DURATION .1
+#define POPUP_HEIGHT 500
+#define PANEL_WIDTH 800
+#define POPUP_PADDING 10
+
+#define MENU_ANIMATION_DURATION .9
 
 #pragma mark -
 
@@ -196,16 +198,14 @@
     NSRect statusRect = [self statusRectForWindow:panel];
 
     NSRect panelRect = [panel frame];
-    panelRect.size.width = PANEL_WIDTH;
-    panelRect.origin.x = roundf(NSMidX(statusRect) - NSWidth(panelRect) / 2);
+    panelRect.size.width = screenRect.size.width - 2 * POPUP_PADDING;
+    panelRect.size.height = screenRect.size.height - POPUP_PADDING - statusRect.size.height;
+    panelRect.origin.x = POPUP_PADDING;
     panelRect.origin.y = NSMaxY(statusRect) - NSHeight(panelRect);
-    
-    if (NSMaxX(panelRect) > (NSMaxX(screenRect) - ARROW_HEIGHT))
-        panelRect.origin.x -= NSMaxX(panelRect) - (NSMaxX(screenRect) - ARROW_HEIGHT);
-    
+  
     [NSApp activateIgnoringOtherApps:NO];
     [panel setAlphaValue:0];
-    [panel setFrame:statusRect display:YES];
+    [panel setFrame:panelRect display:YES];
     [panel makeKeyAndOrderFront:nil];
     
     NSTimeInterval openDuration = OPEN_DURATION;
@@ -228,7 +228,6 @@
     
     [NSAnimationContext beginGrouping];
     [[NSAnimationContext currentContext] setDuration:openDuration];
-    [[panel animator] setFrame:panelRect display:YES];
     [[panel animator] setAlphaValue:1];
     [NSAnimationContext endGrouping];
     
