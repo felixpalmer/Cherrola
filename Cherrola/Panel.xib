@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="12F45" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment defaultVersion="1060" identifier="macosx"/>
+        <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
@@ -16,26 +16,40 @@
         <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="none" id="5" customClass="Panel">
             <windowStyleMask key="styleMask" utility="YES" nonactivatingPanel="YES"/>
             <windowCollectionBehavior key="collectionBehavior" moveToActiveSpace="YES" ignoresCycle="YES"/>
-            <rect key="contentRect" x="162" y="101" width="800" height="600"/>
+            <rect key="contentRect" x="162" y="101" width="1024" height="800"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
-            <view key="contentView" id="6" customClass="BackgroundView">
-                <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
+            <view key="contentView" wantsLayer="YES" id="6" customClass="BackgroundView">
+                <rect key="frame" x="0.0" y="0.0" width="1024" height="800"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="mSV-Jh-wFa">
-                        <rect key="frame" x="-3" y="459" width="806" height="107"/>
+                        <rect key="frame" x="-3" y="495" width="1030" height="271"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Time's Up!" id="ZCy-jc-jdx">
-                            <font key="font" size="80" name="LucidaGrande"/>
-                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <shadow key="shadow" blurRadius="8">
+                            <size key="offset" width="0.0" height="7"/>
+                            <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        </shadow>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Take a break" id="ZCy-jc-jdx">
+                            <font key="font" size="100" name="Helvetica"/>
+                            <color key="textColor" red="1" green="0.95548702129056806" blue="0.99726240171299485" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         </textFieldCell>
                     </textField>
+                    <button verticalHuggingPriority="750" id="0Jy-Ej-WHa">
+                        <rect key="frame" x="312" y="69" width="400" height="102"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="smallSquare" title="Start" bezelStyle="smallSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xcL-f9-VcV">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" size="52" name="Helvetica"/>
+                        </buttonCell>
+                    </button>
                 </subviews>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="8"/>
+                <outlet property="timesUp" destination="mSV-Jh-wFa" id="KUa-bV-QPg"/>
             </connections>
         </window>
+        <userDefaultsController representsSharedInstance="YES" id="pi1-Bx-Fkk"/>
     </objects>
 </document>
