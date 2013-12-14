@@ -53,9 +53,6 @@
 
 #pragma mark - Public accessors
 
-- (IBAction)startClicked:(id)sender {
-}
-
 - (BOOL)hasActivePanel
 {
     return _hasActivePanel;
@@ -181,5 +178,12 @@
         [self.window orderOut:nil];
     });
 }
+
+- (IBAction)startClicked:(id)sender
+{
+  [[self startButton] setEnabled:NO];
+  [self closePanel];
+}
+
 
 @end
