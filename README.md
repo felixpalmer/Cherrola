@@ -1,7 +1,9 @@
-# Popup
+Flamme
+======
 
-Popup project is a demo with custom popover window appearing from the icon in the Mac OS X status bar.
+Flamme is a simple Pomodoro timer app for Mac OSX. It resides in the status bar, and uses a popup to notify you of a completed Pomodoro.
 
-# License
+Popup
+=====
 
-Popup is licensed under the BSD license.
+This project is based on the [Popup](https://github.com/shpakovski/Popup) project.
