@@ -20,7 +20,6 @@
   BOOL _hasActivePanel;
   __unsafe_unretained id<PanelControllerDelegate> _delegate;
   Timer *_timer;
-  Panel *_panel;
 }
 
 @property (nonatomic) BOOL hasActivePanel;

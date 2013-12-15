@@ -5,9 +5,6 @@
 
 #define OPEN_DURATION .4
 #define CLOSE_DURATION .1
-
-#define POPUP_HEIGHT 500
-#define PANEL_WIDTH 800
 #define POPUP_PADDING 5
 
 #define MENU_ANIMATION_DURATION .9
@@ -38,19 +35,17 @@
   [super awakeFromNib];
   
   // Configure panel
-  _panel = (Panel*)[self window];
-  [_panel setAcceptsMouseMovedEvents:YES];
-  [_panel setLevel:NSPopUpMenuWindowLevel];
-  [_panel setOpaque:NO];
-  [_panel setBackgroundColor:[NSColor clearColor]];
-  [_panel setPanelDelegate:self];
-  [_panel setTimeRemaining:[_timer timeRemaining]];
-  
-  // Resize panel
-  NSRect panelRect = [_panel frame];
-  panelRect.size.height = POPUP_HEIGHT;
-  [_panel setFrame:panelRect display:NO];
-  
+  [[self panel] setAcceptsMouseMovedEvents:YES];
+  [[self panel] setLevel:NSPopUpMenuWindowLevel];
+  [[self panel] setOpaque:NO];
+  [[self panel] setBackgroundColor:[NSColor clearColor]];
+  [[self panel] setPanelDelegate:self];
+  [[self panel] setTimeRemaining:[_timer timeRemaining]];
+}
+
+- (Panel*)panel
+{
+  return (Panel*)[self window];
 }
 
 #pragma mark - Public accessors
@@ -86,7 +81,7 @@
 
 - (void)windowDidResignKey:(NSNotification *)notification;
 {
-  if ([_panel isVisible])
+  if ([[self panel] isVisible])
   {
     [self setHasActivePanel:NO];
   }
@@ -128,48 +123,25 @@
 
 - (void)openPanel
 {
-  // Setup panel size
-  Panel *panel = (Panel*)[self window];
+  [[self panel] configureForState:[_timer state]];
   
+  // Resize panel
   NSRect screenRect = [[[NSScreen screens] objectAtIndex:0] frame];
-  NSRect statusRect = [self statusRectForWindow:panel];
-  
-  NSRect panelRect = [panel frame];
+  NSRect statusRect = [self statusRectForWindow:[self panel]];
+  NSRect panelRect = [[self panel] frame];
   panelRect.size.width = screenRect.size.width - 2 * POPUP_PADDING;
   panelRect.size.height = screenRect.size.height - statusRect.size.height - 2 * POPUP_PADDING;
   panelRect.origin.x = POPUP_PADDING;
   panelRect.origin.y = NSMaxY(statusRect) - NSHeight(panelRect) - POPUP_PADDING;
-  
-  // Setup UI based on timer state
-  [panel configureForState:[_timer state]];
-  
+
   // Animate panel onto screen
   [NSApp activateIgnoringOtherApps:NO];
-  [panel setAlphaValue:0];
-  [panel setFrame:panelRect display:YES];
-  [panel makeKeyAndOrderFront:nil];
-  
-  NSTimeInterval openDuration = OPEN_DURATION;
-  
-  NSEvent *currentEvent = [NSApp currentEvent];
-  if ([currentEvent type] == NSLeftMouseDown)
-  {
-    NSUInteger clearFlags = ([currentEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask);
-    BOOL shiftPressed = (clearFlags == NSShiftKeyMask);
-    BOOL shiftOptionPressed = (clearFlags == (NSShiftKeyMask | NSAlternateKeyMask));
-    if (shiftPressed || shiftOptionPressed)
-    {
-      openDuration *= 10;
-      
-      if (shiftOptionPressed)
-        NSLog(@"Icon is at %@\n\tMenu is on screen %@\n\tWill be animated to %@",
-              NSStringFromRect(statusRect), NSStringFromRect(screenRect), NSStringFromRect(panelRect));
-    }
-  }
-  
+  [[self panel] setFrame:panelRect display:YES];
+  [[self panel] setAlphaValue:0];
+  [[self panel] makeKeyAndOrderFront:nil];
   [NSAnimationContext beginGrouping];
-  [[NSAnimationContext currentContext] setDuration:openDuration];
-  [[_panel animator] setAlphaValue:1];
+  [[NSAnimationContext currentContext] setDuration:OPEN_DURATION];
+  [[[self panel] animator] setAlphaValue:1];
   [NSAnimationContext endGrouping];
 }
 
@@ -177,7 +149,7 @@
 {
   [NSAnimationContext beginGrouping];
   [[NSAnimationContext currentContext] setDuration:CLOSE_DURATION];
-  [[_panel animator] setAlphaValue:0];
+  [[[self panel] animator] setAlphaValue:0];
   [NSAnimationContext endGrouping];
   
   dispatch_after(dispatch_walltime(NULL, NSEC_PER_SEC * CLOSE_DURATION * 2), dispatch_get_main_queue(), ^{
@@ -191,7 +163,7 @@
 - (void)startPressed:(id)sender
 {
   [_timer startPomodoro];
-  [_panel configureForState:[_timer state]];
+  [[self panel] configureForState:[_timer state]];
   [self setHasActivePanel:NO];
 }
 
@@ -202,7 +174,7 @@
   } else if ([_timer state] == REST) {
     [_timer cancelRest];
   }
-  [_panel configureForState:[_timer state]];
+  [[self panel] configureForState:[_timer state]];
 }
 
 #pragma mark - TimerDelegate methods
@@ -210,19 +182,19 @@
 - (void)pomodoroEnded
 {
   [_timer startRest];
-  [_panel configureForState:[_timer state]];
+  [[self panel] configureForState:[_timer state]];
   [self setHasActivePanel:YES];
 }
 
 - (void)restEnded
 {
-  [_panel configureForState:[_timer state]];
+  [[self panel] configureForState:[_timer state]];
   [self setHasActivePanel:YES];
 }
 
 - (void)tick:(NSTimeInterval)remaining
 {
-  [_panel setTimeRemaining:remaining];
+  [[self panel] setTimeRemaining:remaining];
 }
 
 @end
