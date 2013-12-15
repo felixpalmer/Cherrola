@@ -38,7 +38,7 @@
   [super awakeFromNib];
   
   // Make a fully skinned panel
-  Panel *panel = (id)[self window];
+  Panel *panel = (Panel*)[self window];
   [panel setAcceptsMouseMovedEvents:YES];
   [panel setLevel:NSPopUpMenuWindowLevel];
   [panel setOpaque:NO];
@@ -127,7 +127,8 @@
 
 - (void)openPanel
 {
-  NSWindow *panel = [self window];
+  // Setup panel size
+  Panel *panel = (Panel*)[self window];
   
   NSRect screenRect = [[[NSScreen screens] objectAtIndex:0] frame];
   NSRect statusRect = [self statusRectForWindow:panel];
@@ -138,6 +139,10 @@
   panelRect.origin.x = POPUP_PADDING;
   panelRect.origin.y = NSMaxY(statusRect) - NSHeight(panelRect) - POPUP_PADDING;
   
+  // Setup UI based on timer state
+  [panel configureForState:[_timer state]];
+  
+  // Animate panel onto screen
   [NSApp activateIgnoringOtherApps:NO];
   [panel setAlphaValue:0];
   [panel setFrame:panelRect display:YES];
@@ -193,7 +198,7 @@
 
 - (void)restEnded
 {
-  
+  [self openPanel];
 }
 
 @end
