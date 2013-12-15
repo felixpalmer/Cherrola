@@ -8,45 +8,93 @@
 
 #import "Timer.h"
 
+@interface Timer ()
+@property (nonatomic, assign, readwrite) enum TIMERSTATE state;
+@end
+
 @implementation Timer
 
 @synthesize delegate;
+@synthesize state;
 
 - (id)initWithDelegate:(id<TimerDelegate>)d
 {
   if (self = [super init]) {
     [self setDelegate:d];
+    [self setState:OFF];
   }
   return self;
 }
 
 - (void)startPomodoro
 {
-  if (_timer) {
-    [self cancelPomodoro];
+  if ([self state] != OFF) {
+    [NSException raise:@"Invalid timer transition" format:@"Cannot start Pomodoro, Timer in state %u", [self state]];
+    return;
   }
   _timer = [NSTimer scheduledTimerWithTimeInterval:POMODORO_DURATION
-                                            target:[self delegate]
-                                          selector:@selector(pomodoroEnded:)
+                                            target:self
+                                          selector:@selector(endPomodoro)
                                           userInfo:nil
                                            repeats:NO];
+  [self setState:POMODORO];
+}
+
+- (void)endPomodoro
+{
+  if ([self state] != POMODORO) {
+    [NSException raise:@"Invalid timer transition" format:@"Cannot end Pomodoro, Timer in state %u", [self state]];
+    return;
+  }
+  [self setState:REST];
+  [_timer invalidate];
+  [[self delegate] pomodoroEnded];
 }
 
 - (void)cancelPomodoro
 {
+  if ([self state] != POMODORO) {
+    [NSException raise:@"Invalid timer transition" format:@"Cannot cancel Pomodoro, Timer in state %u", [self state]];
+    return;
+  }
+  [self setState:OFF];
   [_timer invalidate];
-  _timer = nil;
 }
 
-- (void)startBreak
+- (void)startRest
 {
-  
+  if ([self state] != POMODORO_ENDED) {
+    [NSException raise:@"Invalid timer transition" format:@"Cannot start rest, Timer in state %u", [self state]];
+    return;
+  }
+  _timer = [NSTimer scheduledTimerWithTimeInterval:REST_DURATION
+                                            target:self
+                                          selector:@selector(endRest)
+                                          userInfo:nil
+                                           repeats:NO];
+  [self setState:POMODORO];
 }
 
-- (void)cancelBreak
+- (void)endRest
 {
+  if ([self state] != REST) {
+    [NSException raise:@"Invalid timer transition" format:@"Cannot end rest, Timer in state %u", [self state]];
+    return;
+  }
+  [self setState:OFF];
   [_timer invalidate];
-  _timer = nil;
+  [[self delegate] restEnded];
+}
+
+
+- (void)cancelRest
+{
+  if ([self state] != REST) {
+    [NSException raise:@"Invalid timer transition" format:@"Cannot cancel rest, Timer in state %u", [self state]];
+    return;
+  }
+  [self setState:OFF];
+  [_timer invalidate];
 }
 
 

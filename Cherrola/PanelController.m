@@ -186,12 +186,12 @@
   [self closePanel];
 }
 
-- (void)pomodoroEnded:(NSTimer*)timer
+- (void)pomodoroEnded
 {
   [self openPanel];
 }
 
-- (void)breakEnded:(NSTimer*)timer
+- (void)restEnded
 {
   
 }

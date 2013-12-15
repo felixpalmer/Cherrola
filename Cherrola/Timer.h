@@ -7,14 +7,25 @@
 //
 
 #import <Foundation/Foundation.h>
+
 //#define POMODORO_DURATION 1500 // 25 minutes
-#define POMODORO_DURATION 1 // 25 minutes
-#define BREAK DURATION 300 // 5 minutes
+//#define REST_DURATION 600 // 5 minutes
+#define POMODORO_DURATION 15 // Testing 15 seconds
+#define REST_DURATION 10 // Testing 10 seconds
+
+enum TIMERSTATE {
+  OFF = 0,
+  POMODORO = 1,
+  POMODORO_PAUSED = 2,
+  POMODORO_ENDED = 3,
+  REST = 4,
+  REST_PAUSED = 5
+};
 
 @protocol TimerDelegate <NSObject>
 
-- (void)pomodoroEnded:(NSTimer*)timer;
-- (void)breakEnded:(NSTimer*)timer;
+- (void)pomodoroEnded;
+- (void)restEnded;
 
 @end
 
@@ -24,12 +35,13 @@
 }
 
 @property (nonatomic, weak) id<TimerDelegate> delegate;
+@property (nonatomic, assign, readonly) enum TIMERSTATE state;
 
 - (id)initWithDelegate:(id<TimerDelegate>)delegate;
 
 - (void)startPomodoro;
 - (void)cancelPomodoro;
-- (void)startBreak;
-- (void)cancelBreak;
+- (void)startRest;
+- (void)cancelRest;
 
 @end
