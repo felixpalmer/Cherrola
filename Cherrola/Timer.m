@@ -37,6 +37,12 @@
                                           selector:@selector(endPomodoro)
                                           userInfo:nil
                                            repeats:NO];
+  _tickTimer = [NSTimer scheduledTimerWithTimeInterval:1
+                                            target:self
+                                          selector:@selector(tick)
+                                          userInfo:nil
+                                           repeats:YES];
+
   [self setState:POMODORO];
 }
 
@@ -47,6 +53,8 @@
     return;
   }
   [_timer invalidate];
+  [_tickTimer invalidate];
+  [[self delegate] tick:0];
   [self setState:POMODORO_ENDED];
   [[self delegate] pomodoroEnded];
 }
@@ -57,8 +65,10 @@
     [NSException raise:@"Invalid timer transition" format:@"Cannot cancel Pomodoro, Timer in state %u", [self state]];
     return;
   }
-  [self setState:OFF];
   [_timer invalidate];
+  [_tickTimer invalidate];
+  [[self delegate] tick:POMODORO_DURATION];
+  [self setState:OFF];
 }
 
 - (void)startRest
@@ -72,6 +82,12 @@
                                           selector:@selector(endRest)
                                           userInfo:nil
                                            repeats:NO];
+  _tickTimer = [NSTimer scheduledTimerWithTimeInterval:1
+                                                target:self
+                                              selector:@selector(tick)
+                                              userInfo:nil
+                                               repeats:YES];
+  [[self delegate] tick:REST_DURATION];
   [self setState:REST];
 }
 
@@ -82,6 +98,8 @@
     return;
   }
   [_timer invalidate];
+  [_tickTimer invalidate];
+  [[self delegate] tick:0];
   [self setState:OFF];
   [[self delegate] restEnded];
 }
@@ -92,8 +110,24 @@
     [NSException raise:@"Invalid timer transition" format:@"Cannot cancel rest, Timer in state %u", [self state]];
     return;
   }
-  [self setState:OFF];
   [_timer invalidate];
+  [_tickTimer invalidate];
+  [[self delegate] tick:POMODORO_DURATION];
+  [self setState:OFF];
+}
+
+- (NSTimeInterval)timeRemaining
+{
+  if ([self state] == OFF) {
+    return POMODORO_DURATION;
+  } else {
+    return [[_timer fireDate] timeIntervalSinceDate:[NSDate date]] + 0.5 ;
+  }
+}
+
+- (void)tick
+{
+  [[self delegate] tick:[self timeRemaining]];
 }
 
 @end
