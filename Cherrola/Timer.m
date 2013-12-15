@@ -46,8 +46,8 @@
     [NSException raise:@"Invalid timer transition" format:@"Cannot end Pomodoro, Timer in state %u", [self state]];
     return;
   }
-  [self setState:REST];
   [_timer invalidate];
+  [self setState:POMODORO_ENDED];
   [[self delegate] pomodoroEnded];
 }
 
@@ -72,7 +72,7 @@
                                           selector:@selector(endRest)
                                           userInfo:nil
                                            repeats:NO];
-  [self setState:POMODORO];
+  [self setState:REST];
 }
 
 - (void)endRest
@@ -81,11 +81,10 @@
     [NSException raise:@"Invalid timer transition" format:@"Cannot end rest, Timer in state %u", [self state]];
     return;
   }
-  [self setState:OFF];
   [_timer invalidate];
+  [self setState:OFF];
   [[self delegate] restEnded];
 }
-
 
 - (void)cancelRest
 {
@@ -96,6 +95,5 @@
   [self setState:OFF];
   [_timer invalidate];
 }
-
 
 @end

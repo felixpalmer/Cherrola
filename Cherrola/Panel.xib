@@ -7,7 +7,6 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PanelController">
             <connections>
-                <outlet property="startButton" destination="0Jy-Ej-WHa" id="l9k-oa-IjI"/>
                 <outlet property="window" destination="5" id="7"/>
             </connections>
         </customObject>
@@ -36,22 +35,34 @@
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" id="0Jy-Ej-WHa">
-                        <rect key="frame" x="312" y="69" width="400" height="102"/>
+                        <rect key="frame" x="604" y="19" width="400" height="102"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <buttonCell key="cell" type="smallSquare" title="Start" bezelStyle="smallSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xcL-f9-VcV">
+                        <buttonCell key="cell" type="smallSquare" title="Cancel" bezelStyle="smallSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xcL-f9-VcV">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" size="52" name="Helvetica"/>
                         </buttonCell>
                         <connections>
-                            <action selector="startPressed:" target="5" id="egX-Ku-1c6"/>
+                            <action selector="cancelPressed:" target="5" id="SXu-KT-zPL"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" id="41X-bP-bX7">
+                        <rect key="frame" x="20" y="19" width="400" height="102"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="smallSquare" title="Start" bezelStyle="smallSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ObG-ju-y6L">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" size="52" name="Helvetica"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="startPressed:" target="5" id="DvX-hJ-1fa"/>
                         </connections>
                     </button>
                 </subviews>
             </view>
             <connections>
+                <outlet property="cancelButton" destination="0Jy-Ej-WHa" id="RGe-iU-O9r"/>
                 <outlet property="delegate" destination="-2" id="8"/>
                 <outlet property="message" destination="mSV-Jh-wFa" id="lcQ-Vo-y7j"/>
-                <outlet property="startButton" destination="0Jy-Ej-WHa" id="6K1-yi-Dtq"/>
+                <outlet property="startButton" destination="41X-bP-bX7" id="xHy-zF-gmN"/>
             </connections>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="pi1-Bx-Fkk"/>

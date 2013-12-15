@@ -38,17 +38,17 @@
   [super awakeFromNib];
   
   // Make a fully skinned panel
-  Panel *panel = (Panel*)[self window];
-  [panel setAcceptsMouseMovedEvents:YES];
-  [panel setLevel:NSPopUpMenuWindowLevel];
-  [panel setOpaque:NO];
-  [panel setBackgroundColor:[NSColor clearColor]];
-  [panel setPanelDelegate:self];
+  _panel = (Panel*)[self window];
+  [_panel setAcceptsMouseMovedEvents:YES];
+  [_panel setLevel:NSPopUpMenuWindowLevel];
+  [_panel setOpaque:NO];
+  [_panel setBackgroundColor:[NSColor clearColor]];
+  [_panel setPanelDelegate:self];
   
   // Resize panel
-  NSRect panelRect = [[self window] frame];
+  NSRect panelRect = [_panel frame];
   panelRect.size.height = POPUP_HEIGHT;
-  [[self window] setFrame:panelRect display:NO];
+  [_panel setFrame:panelRect display:NO];
   
 }
 
@@ -85,7 +85,7 @@
 
 - (void)windowDidResignKey:(NSNotification *)notification;
 {
-  if ([[self window] isVisible])
+  if ([_panel isVisible])
   {
     self.hasActivePanel = NO;
   }
@@ -176,7 +176,7 @@
 {
   [NSAnimationContext beginGrouping];
   [[NSAnimationContext currentContext] setDuration:CLOSE_DURATION];
-  [[[self window] animator] setAlphaValue:0];
+  [[_panel animator] setAlphaValue:0];
   [NSAnimationContext endGrouping];
   
   dispatch_after(dispatch_walltime(NULL, NSEC_PER_SEC * CLOSE_DURATION * 2), dispatch_get_main_queue(), ^{
@@ -191,8 +191,19 @@
   [self closePanel];
 }
 
+- (void)cancelPressed:(id)sender
+{
+  if ([_timer state] == POMODORO) {
+    [_timer cancelPomodoro];
+  } else if ([_timer state] == REST) {
+    [_timer cancelRest];
+  }
+  [_panel configureForState:[_timer state]];
+}
+
 - (void)pomodoroEnded
 {
+  [_timer startRest];
   [self openPanel];
 }
 

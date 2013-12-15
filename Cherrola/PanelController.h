@@ -18,11 +18,9 @@
 @interface PanelController : NSWindowController <NSWindowDelegate, TimerDelegate, PanelDelegate>
 {
   BOOL _hasActivePanel;
-  __unsafe_unretained BackgroundView *_backgroundView;
   __unsafe_unretained id<PanelControllerDelegate> _delegate;
-  __unsafe_unretained NSSearchField *_searchField;
-  __unsafe_unretained NSTextField *_textField;
   Timer *_timer;
+  Panel *_panel;
 }
 
 @property (nonatomic) BOOL hasActivePanel;
