@@ -7,7 +7,6 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PanelController">
             <connections>
-                <outlet property="backgroundView" destination="6" id="20"/>
                 <outlet property="startButton" destination="0Jy-Ej-WHa" id="l9k-oa-IjI"/>
                 <outlet property="window" destination="5" id="7"/>
             </connections>
@@ -44,14 +43,14 @@
                             <font key="font" size="52" name="Helvetica"/>
                         </buttonCell>
                         <connections>
-                            <action selector="startClicked:" target="-2" id="dZn-Xw-9lg"/>
+                            <action selector="startPressed:" target="5" id="egX-Ku-1c6"/>
                         </connections>
                     </button>
                 </subviews>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="8"/>
-                <outlet property="timesUp" destination="mSV-Jh-wFa" id="KUa-bV-QPg"/>
+                <outlet property="message" destination="mSV-Jh-wFa" id="lcQ-Vo-y7j"/>
             </connections>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="pi1-Bx-Fkk"/>

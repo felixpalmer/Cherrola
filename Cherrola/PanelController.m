@@ -16,7 +16,6 @@
 
 @implementation PanelController
 
-@synthesize backgroundView = _backgroundView;
 @synthesize delegate = _delegate;
 
 #pragma mark -
@@ -39,11 +38,12 @@
   [super awakeFromNib];
   
   // Make a fully skinned panel
-  NSPanel *panel = (id)[self window];
+  Panel *panel = (id)[self window];
   [panel setAcceptsMouseMovedEvents:YES];
   [panel setLevel:NSPopUpMenuWindowLevel];
   [panel setOpaque:NO];
   [panel setBackgroundColor:[NSColor clearColor]];
+  [panel setPanelDelegate:self];
   
   // Resize panel
   NSRect panelRect = [[self window] frame];
@@ -180,7 +180,7 @@
   });
 }
 
-- (IBAction)startClicked:(id)sender
+- (void)startPressed:(id)sender
 {
   [_timer startPomodoro];
   [self closePanel];

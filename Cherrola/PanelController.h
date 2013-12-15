@@ -1,4 +1,5 @@
 #import "BackgroundView.h"
+#import "Panel.h"
 #import "StatusItemView.h"
 #import "Timer.h"
 
@@ -14,7 +15,7 @@
 
 #pragma mark -
 
-@interface PanelController : NSWindowController <NSWindowDelegate, TimerDelegate>
+@interface PanelController : NSWindowController <NSWindowDelegate, TimerDelegate, PanelDelegate>
 {
   BOOL _hasActivePanel;
   __unsafe_unretained BackgroundView *_backgroundView;
@@ -24,9 +25,6 @@
   Timer *_timer;
 }
 
-@property (nonatomic, unsafe_unretained) IBOutlet BackgroundView *backgroundView;
-@property (weak) IBOutlet NSButton *startButton;
-
 @property (nonatomic) BOOL hasActivePanel;
 @property (nonatomic, unsafe_unretained, readonly) id<PanelControllerDelegate> delegate;
 
@@ -34,6 +32,5 @@
 
 - (void)openPanel;
 - (void)closePanel;
-- (IBAction)startClicked:(id)sender;
 
 @end
