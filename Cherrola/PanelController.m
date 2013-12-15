@@ -37,13 +37,14 @@
 {
   [super awakeFromNib];
   
-  // Make a fully skinned panel
+  // Configure panel
   _panel = (Panel*)[self window];
   [_panel setAcceptsMouseMovedEvents:YES];
   [_panel setLevel:NSPopUpMenuWindowLevel];
   [_panel setOpaque:NO];
   [_panel setBackgroundColor:[NSColor clearColor]];
   [_panel setPanelDelegate:self];
+  [_panel setTimeRemaining:[_timer timeRemaining]];
   
   // Resize panel
   NSRect panelRect = [_panel frame];
@@ -80,14 +81,14 @@
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-  self.hasActivePanel = NO;
+  [self setHasActivePanel:NO];
 }
 
 - (void)windowDidResignKey:(NSNotification *)notification;
 {
   if ([_panel isVisible])
   {
-    self.hasActivePanel = NO;
+    [self setHasActivePanel:NO];
   }
 }
 
@@ -95,7 +96,7 @@
 
 - (void)cancelOperation:(id)sender
 {
-  self.hasActivePanel = NO;
+  [self setHasActivePanel:NO];
 }
 
 #pragma mark - Public methods
@@ -168,7 +169,7 @@
   
   [NSAnimationContext beginGrouping];
   [[NSAnimationContext currentContext] setDuration:openDuration];
-  [[panel animator] setAlphaValue:1];
+  [[_panel animator] setAlphaValue:1];
   [NSAnimationContext endGrouping];
 }
 
@@ -185,10 +186,13 @@
   });
 }
 
+#pragma mark - PanelDelegate methods
+
 - (void)startPressed:(id)sender
 {
   [_timer startPomodoro];
-  [self closePanel];
+  [_panel configureForState:[_timer state]];
+  [self setHasActivePanel:NO];
 }
 
 - (void)cancelPressed:(id)sender
@@ -201,15 +205,24 @@
   [_panel configureForState:[_timer state]];
 }
 
+#pragma mark - TimerDelegate methods
+
 - (void)pomodoroEnded
 {
   [_timer startRest];
-  [self openPanel];
+  [_panel configureForState:[_timer state]];
+  [self setHasActivePanel:YES];
 }
 
 - (void)restEnded
 {
-  [self openPanel];
+  [_panel configureForState:[_timer state]];
+  [self setHasActivePanel:YES];
+}
+
+- (void)tick:(NSTimeInterval)remaining
+{
+  [_panel setTimeRemaining:remaining];
 }
 
 @end
