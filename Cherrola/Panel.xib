@@ -15,14 +15,14 @@
         <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="none" id="5" customClass="Panel">
             <windowStyleMask key="styleMask" utility="YES" nonactivatingPanel="YES"/>
             <windowCollectionBehavior key="collectionBehavior" moveToActiveSpace="YES" ignoresCycle="YES"/>
-            <rect key="contentRect" x="162" y="101" width="1024" height="800"/>
+            <rect key="contentRect" x="162" y="101" width="1000" height="800"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
             <view key="contentView" wantsLayer="YES" id="6" customClass="BackgroundView">
-                <rect key="frame" x="0.0" y="0.0" width="1024" height="800"/>
+                <rect key="frame" x="0.0" y="0.0" width="1000" height="800"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="mSV-Jh-wFa">
-                        <rect key="frame" x="-3" y="495" width="1030" height="271"/>
+                        <rect key="frame" x="-3" y="403" width="1006" height="271"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <shadow key="shadow" blurRadius="8">
                             <size key="offset" width="0.0" height="7"/>
@@ -30,13 +30,13 @@
                         </shadow>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Take a break" id="ZCy-jc-jdx">
                             <font key="font" size="100" name="Helvetica"/>
-                            <color key="textColor" red="1" green="0.95548702129056806" blue="0.99726240171299485" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="textColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" id="0Jy-Ej-WHa">
-                        <rect key="frame" x="604" y="19" width="400" height="102"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <rect key="frame" x="525" y="31" width="400.00000000000006" height="102"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="smallSquare" title="Cancel" bezelStyle="smallSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xcL-f9-VcV">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" size="52" name="Helvetica"/>
@@ -46,8 +46,8 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" id="41X-bP-bX7">
-                        <rect key="frame" x="20" y="19" width="400" height="102"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <rect key="frame" x="75" y="31" width="400" height="102"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="smallSquare" title="Start" bezelStyle="smallSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ObG-ju-y6L">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" size="52" name="Helvetica"/>
@@ -56,10 +56,24 @@
                             <action selector="startPressed:" target="5" id="DvX-hJ-1fa"/>
                         </connections>
                     </button>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="VDZ-JG-P2p">
+                        <rect key="frame" x="159" y="205" width="682" height="300"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <shadow key="shadow" blurRadius="8">
+                            <size key="offset" width="0.0" height="7"/>
+                            <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        </shadow>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="25:00" id="faE-DS-MgZ">
+                            <font key="font" size="200" name="LucidaGrande"/>
+                            <color key="textColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                 </subviews>
             </view>
             <connections>
                 <outlet property="cancelButton" destination="0Jy-Ej-WHa" id="RGe-iU-O9r"/>
+                <outlet property="countdown" destination="VDZ-JG-P2p" id="lG2-eO-70x"/>
                 <outlet property="delegate" destination="-2" id="8"/>
                 <outlet property="message" destination="mSV-Jh-wFa" id="lcQ-Vo-y7j"/>
                 <outlet property="startButton" destination="41X-bP-bX7" id="xHy-zF-gmN"/>

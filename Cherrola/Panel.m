@@ -1,8 +1,19 @@
 #import "Panel.h"
 
+@interface Panel() {
+  NSDateFormatter *_formatter;
+}
+
+@end
+
 @implementation Panel
 
 @synthesize panelDelegate;
+
+- (void)awakeFromNib {
+  _formatter = [[NSDateFormatter alloc] init];
+  [_formatter setDateFormat:@"mm:ss"];
+}
 
 - (IBAction)startPressed:(id)sender {
   [[self panelDelegate] startPressed:sender];
@@ -39,6 +50,12 @@
     default:
       break;
   }
+}
+
+- (void)setTimeRemaining:(NSTimeInterval)remaining
+{
+  NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:remaining];
+  [[[self countdown] cell] setTitle:[_formatter stringFromDate:date]];
 }
 
 @end
