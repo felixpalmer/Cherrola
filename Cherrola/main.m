@@ -1,9 +1,9 @@
 //
 //  main.m
-//  Popup
+//  Cherrola
 //
-//  Created by Vadim Shpakovski on 7/5/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Created by Felix Palmer on 14/12/13.
+//  Copyright 2013 Felix Palmer. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>

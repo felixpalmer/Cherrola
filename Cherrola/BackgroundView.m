@@ -3,16 +3,12 @@
 #define FILL_OPACITY 0.9f
 #define STROKE_OPACITY 1.0f
 
-#define LINE_THICKNESS 1.0f
-#define CORNER_RADIUS 6.0f
-
-#define SEARCH_INSET 10.0f
+#define LINE_THICKNESS 2.0f
+#define CORNER_RADIUS 10.0f
 
 #pragma mark -
 
 @implementation BackgroundView
-
-@synthesize arrowX = _arrowX;
 
 #pragma mark -
 
@@ -20,13 +16,10 @@
 {
     NSRect contentRect = NSInsetRect([self bounds], LINE_THICKNESS, LINE_THICKNESS);
     NSBezierPath *path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(NSMaxX(contentRect) - CORNER_RADIUS, NSMaxY(contentRect))];
     
-    [path moveToPoint:NSMakePoint(_arrowX, NSMaxY(contentRect))];
-    [path lineToPoint:NSMakePoint(_arrowX + ARROW_WIDTH / 2, NSMaxY(contentRect) - ARROW_HEIGHT)];
-    [path lineToPoint:NSMakePoint(NSMaxX(contentRect) - CORNER_RADIUS, NSMaxY(contentRect) - ARROW_HEIGHT)];
-    
-    NSPoint topRightCorner = NSMakePoint(NSMaxX(contentRect), NSMaxY(contentRect) - ARROW_HEIGHT);
-    [path curveToPoint:NSMakePoint(NSMaxX(contentRect), NSMaxY(contentRect) - ARROW_HEIGHT - CORNER_RADIUS)
+    NSPoint topRightCorner = NSMakePoint(NSMaxX(contentRect), NSMaxY(contentRect));
+    [path curveToPoint:NSMakePoint(NSMaxX(contentRect), NSMaxY(contentRect) - CORNER_RADIUS)
          controlPoint1:topRightCorner controlPoint2:topRightCorner];
     
     [path lineToPoint:NSMakePoint(NSMaxX(contentRect), NSMinY(contentRect) + CORNER_RADIUS)];
@@ -40,16 +33,16 @@
     [path curveToPoint:NSMakePoint(NSMinX(contentRect), NSMinY(contentRect) + CORNER_RADIUS)
          controlPoint1:contentRect.origin controlPoint2:contentRect.origin];
     
-    [path lineToPoint:NSMakePoint(NSMinX(contentRect), NSMaxY(contentRect) - ARROW_HEIGHT - CORNER_RADIUS)];
+    [path lineToPoint:NSMakePoint(NSMinX(contentRect), NSMaxY(contentRect) - CORNER_RADIUS)];
     
-    NSPoint topLeftCorner = NSMakePoint(NSMinX(contentRect), NSMaxY(contentRect) - ARROW_HEIGHT);
-    [path curveToPoint:NSMakePoint(NSMinX(contentRect) + CORNER_RADIUS, NSMaxY(contentRect) - ARROW_HEIGHT)
+    NSPoint topLeftCorner = NSMakePoint(NSMinX(contentRect), NSMaxY(contentRect));
+    [path curveToPoint:NSMakePoint(NSMinX(contentRect) + CORNER_RADIUS, NSMaxY(contentRect))
          controlPoint1:topLeftCorner controlPoint2:topLeftCorner];
     
-    [path lineToPoint:NSMakePoint(_arrowX - ARROW_WIDTH / 2, NSMaxY(contentRect) - ARROW_HEIGHT)];
+    //[path lineToPoint:NSMakePoint(_arrowX - ARROW_WIDTH / 2, NSMaxY(contentRect) - ARROW_HEIGHT)];
     [path closePath];
     
-    [[NSColor colorWithDeviceWhite:1 alpha:FILL_OPACITY] setFill];
+    [[NSColor colorWithDeviceWhite:0.1 alpha:FILL_OPACITY] setFill];
     [path fill];
     
     [NSGraphicsContext saveGraphicsState];
@@ -59,19 +52,10 @@
     [clip addClip];
     
     [path setLineWidth:LINE_THICKNESS * 2];
-    [[NSColor whiteColor] setStroke];
+    [[NSColor blackColor] setStroke];
     [path stroke];
     
     [NSGraphicsContext restoreGraphicsState];
-}
-
-#pragma mark -
-#pragma mark Public accessors
-
-- (void)setArrowX:(NSInteger)value
-{
-    _arrowX = value;
-    [self setNeedsDisplay:YES];
 }
 
 @end

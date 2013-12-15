@@ -1,0 +1,2 @@
+@interface BackgroundView : NSView
+@end

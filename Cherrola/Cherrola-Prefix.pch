@@ -1,0 +1,9 @@
+//
+// Prefix header for all source files of the 'Cherrola' target in the 'Cherrola' project
+//
+
+#ifdef __OBJC__
+
+#import <Cocoa/Cocoa.h>
+
+#endif
