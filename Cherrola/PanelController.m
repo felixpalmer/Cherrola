@@ -3,8 +3,11 @@
 #import "StatusItemView.h"
 #import "MenubarController.h"
 
-#define OPEN_DURATION .4
-#define CLOSE_DURATION .1
+#define OPEN_DURATION .7
+#define CLOSE_DELAY 1.337
+#define CLOSE_DURATION .4
+
+#define SLIDE_DISTANCE 10
 #define POPUP_PADDING 5
 
 #define MENU_ANIMATION_DURATION .9
@@ -135,25 +138,32 @@
   panelRect.origin.y = NSMaxY(statusRect) - NSHeight(panelRect) - POPUP_PADDING;
 
   // Animate panel onto screen
+  panelRect.origin.y -= SLIDE_DISTANCE;
   [NSApp activateIgnoringOtherApps:NO];
   [[self panel] setFrame:panelRect display:YES];
   [[self panel] setAlphaValue:0];
   [[self panel] makeKeyAndOrderFront:nil];
+  
+  panelRect.origin.y += SLIDE_DISTANCE;
   [NSAnimationContext beginGrouping];
   [[NSAnimationContext currentContext] setDuration:OPEN_DURATION];
   [[[self panel] animator] setAlphaValue:1];
+  [[[self panel] animator] setFrame:panelRect display:YES];
   [NSAnimationContext endGrouping];
 }
 
 - (void)closePanel
 {
+  NSRect panelRect = [[self panel] frame];
+  panelRect.origin.y -= SLIDE_DISTANCE;
+  
   [NSAnimationContext beginGrouping];
   [[NSAnimationContext currentContext] setDuration:CLOSE_DURATION];
   [[[self panel] animator] setAlphaValue:0];
+  [[[self panel] animator] setFrame:panelRect display:YES];
   [NSAnimationContext endGrouping];
   
   dispatch_after(dispatch_walltime(NULL, NSEC_PER_SEC * CLOSE_DURATION * 2), dispatch_get_main_queue(), ^{
-    
     [self.window orderOut:nil];
   });
 }
@@ -164,7 +174,9 @@
 {
   [_timer startPomodoro];
   [[self panel] configureForState:[_timer state]];
-  [self setHasActivePanel:NO];
+  dispatch_after(dispatch_walltime(NULL, NSEC_PER_SEC * CLOSE_DELAY), dispatch_get_main_queue(), ^{
+    [self setHasActivePanel:NO];
+  });
 }
 
 - (void)cancelPressed:(id)sender

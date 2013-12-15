@@ -35,7 +35,7 @@
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" id="0Jy-Ej-WHa">
-                        <rect key="frame" x="525" y="31" width="400.00000000000006" height="102"/>
+                        <rect key="frame" x="525" y="31" width="400" height="102"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="smallSquare" title="Cancel" bezelStyle="smallSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xcL-f9-VcV">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
