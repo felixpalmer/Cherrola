@@ -19,7 +19,7 @@
 
 static Timer *_sharedInstance;
 
-+ (id)sharedInstance
++ (Timer*)sharedInstance
 {
   if (_sharedInstance == nil) {
     _sharedInstance = [[Timer alloc] init];

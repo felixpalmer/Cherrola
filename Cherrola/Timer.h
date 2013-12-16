@@ -39,7 +39,7 @@ enum TIMERSTATE {
 @property (nonatomic, weak) id<TimerDelegate> delegate;
 @property (nonatomic, assign, readonly) enum TIMERSTATE state;
 
-+ (id)sharedInstance;
++ (Timer*)sharedInstance;
 
 - (NSTimeInterval)timeRemaining;
 
