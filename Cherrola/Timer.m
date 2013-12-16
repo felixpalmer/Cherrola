@@ -99,7 +99,7 @@
   }
   [_timer invalidate];
   [_tickTimer invalidate];
-  [[self delegate] tick:0];
+  [[self delegate] tick:POMODORO_DURATION];
   [self setState:OFF];
   [[self delegate] restEnded];
 }
