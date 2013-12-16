@@ -17,10 +17,19 @@
 @synthesize delegate;
 @synthesize state;
 
-- (id)initWithDelegate:(id<TimerDelegate>)d
+static Timer *_sharedInstance;
+
++ (id)sharedInstance
+{
+  if (_sharedInstance == nil) {
+    _sharedInstance = [[Timer alloc] init];
+  }
+  return _sharedInstance;
+}
+
+- (id)init
 {
   if (self = [super init]) {
-    [self setDelegate:d];
     [self setState:OFF];
   }
   return self;

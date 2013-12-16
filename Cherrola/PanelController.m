@@ -26,9 +26,15 @@
   if (self != nil)
   {
     _delegate = delegate;
-    _timer = [[Timer alloc] initWithDelegate:self];
+    _timer = [Timer sharedInstance];
+    [_timer setDelegate:self];
   }
   return self;
+}
+
+- (void)dealloc
+{
+  _timer = nil;
 }
 
 #pragma mark -

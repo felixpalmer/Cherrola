@@ -39,7 +39,8 @@ enum TIMERSTATE {
 @property (nonatomic, weak) id<TimerDelegate> delegate;
 @property (nonatomic, assign, readonly) enum TIMERSTATE state;
 
-- (id)initWithDelegate:(id<TimerDelegate>)delegate;
++ (id)sharedInstance;
+
 - (NSTimeInterval)timeRemaining;
 
 - (void)startPomodoro;
