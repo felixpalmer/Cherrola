@@ -190,8 +190,9 @@
 {
   if ([_timer state] == POMODORO) {
     [_timer cancelPomodoro];
-  } else if ([_timer state] == REST) {
-    [_timer cancelRest];
+    dispatch_after(dispatch_walltime(NULL, NSEC_PER_SEC * CLOSE_DELAY), dispatch_get_main_queue(), ^{
+      [self setHasActivePanel:NO];
+    });
   }
   [[self panel] configureForState:[_timer state]];
 }
