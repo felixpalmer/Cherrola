@@ -45,7 +45,7 @@
     case REST:
       [[[self message] cell] setTitle:@"Take a break"];
       [[self startButton] setEnabled:NO];
-      [[self cancelButton] setEnabled:YES];
+      [[self cancelButton] setEnabled:NO];
       break;
     default:
       break;
