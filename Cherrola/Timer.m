@@ -47,11 +47,11 @@ static Timer *_sharedInstance;
                                           userInfo:nil
                                            repeats:NO];
   _tickTimer = [NSTimer scheduledTimerWithTimeInterval:1
-                                            target:self
-                                          selector:@selector(tick)
-                                          userInfo:nil
-                                           repeats:YES];
-
+                                                target:self
+                                              selector:@selector(tick)
+                                              userInfo:nil
+                                               repeats:YES];
+  
   [self setState:POMODORO];
 }
 

@@ -142,7 +142,7 @@
   panelRect.size.height = screenRect.size.height - statusRect.size.height - 2 * POPUP_PADDING;
   panelRect.origin.x = POPUP_PADDING;
   panelRect.origin.y = NSMaxY(statusRect) - NSHeight(panelRect) - POPUP_PADDING;
-
+  
   // Animate panel onto screen
   panelRect.origin.y -= SLIDE_DISTANCE;
   [NSApp activateIgnoringOtherApps:NO];
