@@ -163,15 +163,15 @@
   NSRect panelRect = [[self panel] frame];
   panelRect.origin.y -= SLIDE_DISTANCE;
   
+  // Animate panel off screen
   [NSAnimationContext beginGrouping];
+  [[NSAnimationContext currentContext] setCompletionHandler:^{
+    [self.window orderOut:nil];
+  }];
   [[NSAnimationContext currentContext] setDuration:CLOSE_DURATION];
   [[[self panel] animator] setAlphaValue:0];
   [[[self panel] animator] setFrame:panelRect display:YES];
   [NSAnimationContext endGrouping];
-  
-  dispatch_after(dispatch_walltime(NULL, NSEC_PER_SEC * CLOSE_DURATION * 2), dispatch_get_main_queue(), ^{
-    [self.window orderOut:nil];
-  });
 }
 
 #pragma mark - PanelDelegate methods
