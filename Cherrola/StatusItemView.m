@@ -1,4 +1,5 @@
 #import "StatusItemView.h"
+#import "Timer.h"
 
 @implementation StatusItemView
 
@@ -18,7 +19,7 @@
   
   if (self != nil) {
     _statusItem = statusItem;
-    _statusItem.view = self;
+    [_statusItem setView:self];
   }
   return self;
 }
@@ -29,34 +30,72 @@
 - (void)drawRect:(NSRect)dirtyRect
 {
 	[self.statusItem drawStatusBarBackgroundInRect:dirtyRect withHighlight:self.isHighlighted];
-  NSColor *color = self.isHighlighted ? [NSColor whiteColor] : [NSColor blackColor];
-  [self drawArcWithRadius:7
-              color:[color CGColor]
-                lineWidth:1.5
-                    angle:1.5 * pi];
+  // Calculate angle of wedge from remaing time
+  CGFloat angle = 2.0 * pi;
+  CGFloat workBreakRatio = (float)POMODORO_DURATION / (float)(POMODORO_DURATION + REST_DURATION);
+  if ([[Timer sharedInstance] state] == POMODORO) {
+    CGFloat timeElapsed = (float)POMODORO_DURATION - [[Timer sharedInstance] timeRemaining];
+    angle = 2.0 * pi * workBreakRatio * (timeElapsed / (float)POMODORO_DURATION);
+  } else if ([[Timer sharedInstance] state] == REST) {
+    CGFloat timeElapsed = (float)REST_DURATION - [[Timer sharedInstance] timeRemaining];
+    angle = 2.0 * pi * (workBreakRatio + (1.0 - workBreakRatio) * (timeElapsed / (float)REST_DURATION));
+  }
+
+  // Draw outline circle
+  [self drawArcWithRadius:7.5
+                   center:CGPointMake(self.frame.size.width / 2, 12)
+              highlighted:self.isHighlighted
+                     fill:NO
+                lineWidth:1.337
+               startAngle:0
+               sweepAngle:2 * pi * workBreakRatio];
+
+  // Draw wedge
+  [self drawArcWithRadius:5
+                   center:CGPointMake(self.frame.size.width / 2, 12)
+              highlighted:self.isHighlighted
+                     fill:YES
+                lineWidth:1.337
+               startAngle:0
+               sweepAngle:angle];
 }
 
 - (void)drawArcWithRadius:(CGFloat)radius
-              color:(CGColorRef)color
+                   center:(CGPoint)center
+              highlighted:(BOOL)highlighted
+                     fill:(BOOL)fill
                 lineWidth:(CGFloat)lineWidth
-                  angle:(float)angle
+               startAngle:(float)startAngle
+               sweepAngle:(float)sweepAngle
 {
+  NSColor *color = highlighted ? [NSColor whiteColor] : [NSColor blackColor];
+
   CGContextRef ctx = [[NSGraphicsContext currentContext] graphicsPort];
-  CGPoint center = CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2);
+  if (!highlighted) {
+  CGContextSetShadowWithColor(ctx,
+                              CGSizeMake(0, -1.0), 0,
+                              CGColorCreateGenericGray(1.0, 0.7));
+  }
   
-  // Trace out path
-  CGContextMoveToPoint(ctx, center.x, center.y);
-  CGContextAddLineToPoint(ctx, center.x, center.y + radius);
-  CGContextAddArc(ctx, center.x , center.y, radius, pi/2, pi/2 - angle, 1);
-  CGContextAddLineToPoint(ctx, center.x, center.y);
+  // Trace out path - measure angles from positive y axis
+  if (fill) {
+    CGContextMoveToPoint(ctx, center.x, center.y);
+    CGContextAddLineToPoint(ctx, center.x, center.y + radius);
+  } else {
+    CGContextMoveToPoint(ctx, center.x, center.y + radius);
+  }
+  CGContextAddArc(ctx, center.x , center.y, radius,
+                  pi / 2 + startAngle, pi / 2 + startAngle - sweepAngle, 1);
   
   // Configure stroke and fill colors
-  CGContextSetStrokeColorWithColor(ctx, color);
-  CGContextSetFillColorWithColor(ctx, color);
+  CGContextSetStrokeColorWithColor(ctx, [color CGColor]);
+  CGContextSetFillColorWithColor(ctx, [color CGColor]);
   CGContextSetLineWidth(ctx, lineWidth);
 
   // Fill and stroke
-  //CGContextFillPath(ctx);
+  if (fill) {
+    CGContextFillPath(ctx);
+  }
   CGContextStrokePath(ctx);
 }
 

@@ -1,7 +1,8 @@
-#import "PanelController.h"
+#import "ApplicationDelegate.h"
 #import "BackgroundView.h"
-#import "StatusItemView.h"
 #import "MenubarController.h"
+#import "PanelController.h"
+#import "StatusItemView.h"
 
 #define OPEN_DURATION .7
 #define CLOSE_DELAY 1.337
@@ -213,6 +214,8 @@
 - (void)tick:(NSTimeInterval)remaining
 {
   [[self panel] setTimeRemaining:remaining];
+  ApplicationDelegate *appDelegate = (ApplicationDelegate*)[NSApp delegate];
+  [[[appDelegate menubarController] statusItemView] setNeedsDisplay:YES];
 }
 
 @end
