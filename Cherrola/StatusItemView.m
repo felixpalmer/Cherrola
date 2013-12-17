@@ -3,8 +3,6 @@
 @implementation StatusItemView
 
 @synthesize statusItem = _statusItem;
-@synthesize image = _image;
-@synthesize alternateImage = _alternateImage;
 @synthesize isHighlighted = _isHighlighted;
 @synthesize action = _action;
 @synthesize target = _target;
@@ -26,20 +24,40 @@
 }
 
 
-#pragma mark -
+#pragma mark - Drawing methods
 
 - (void)drawRect:(NSRect)dirtyRect
 {
 	[self.statusItem drawStatusBarBackgroundInRect:dirtyRect withHighlight:self.isHighlighted];
+  NSColor *color = self.isHighlighted ? [NSColor whiteColor] : [NSColor blackColor];
+  [self drawArcWithRadius:7
+              color:[color CGColor]
+                lineWidth:1.5
+                    angle:1.5 * pi];
+}
+
+- (void)drawArcWithRadius:(CGFloat)radius
+              color:(CGColorRef)color
+                lineWidth:(CGFloat)lineWidth
+                  angle:(float)angle
+{
+  CGContextRef ctx = [[NSGraphicsContext currentContext] graphicsPort];
+  CGPoint center = CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2);
   
-  NSImage *icon = self.isHighlighted ? self.alternateImage : self.image;
-  NSSize iconSize = [icon size];
-  NSRect bounds = self.bounds;
-  CGFloat iconX = roundf((NSWidth(bounds) - iconSize.width) / 2);
-  CGFloat iconY = roundf((NSHeight(bounds) - iconSize.height) / 2);
-  NSPoint iconPoint = NSMakePoint(iconX, iconY);
+  // Trace out path
+  CGContextMoveToPoint(ctx, center.x, center.y);
+  CGContextAddLineToPoint(ctx, center.x, center.y + radius);
+  CGContextAddArc(ctx, center.x , center.y, radius, pi/2, pi/2 - angle, 1);
+  CGContextAddLineToPoint(ctx, center.x, center.y);
   
-	[icon drawAtPoint:iconPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+  // Configure stroke and fill colors
+  CGContextSetStrokeColorWithColor(ctx, color);
+  CGContextSetFillColorWithColor(ctx, color);
+  CGContextSetLineWidth(ctx, lineWidth);
+
+  // Fill and stroke
+  //CGContextFillPath(ctx);
+  CGContextStrokePath(ctx);
 }
 
 #pragma mark -
@@ -58,26 +76,6 @@
   if (_isHighlighted == newFlag) return;
   _isHighlighted = newFlag;
   [self setNeedsDisplay:YES];
-}
-
-#pragma mark -
-
-- (void)setImage:(NSImage *)newImage
-{
-  if (_image != newImage) {
-    _image = newImage;
-    [self setNeedsDisplay:YES];
-  }
-}
-
-- (void)setAlternateImage:(NSImage *)newImage
-{
-  if (_alternateImage != newImage) {
-    _alternateImage = newImage;
-    if (self.isHighlighted) {
-      [self setNeedsDisplay:YES];
-    }
-  }
 }
 
 #pragma mark -
