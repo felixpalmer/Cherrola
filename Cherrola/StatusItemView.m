@@ -68,7 +68,7 @@
                startAngle:(float)startAngle
                sweepAngle:(float)sweepAngle
 {
-  NSColor *color = highlighted ? [NSColor whiteColor] : [NSColor blackColor];
+  CGColorRef color = CGColorCreateGenericGray(highlighted ? 1.0: 0.0, 1.0);
 
   CGContextRef ctx = [[NSGraphicsContext currentContext] graphicsPort];
   if (!highlighted) {
@@ -88,8 +88,8 @@
                   pi / 2 + startAngle, pi / 2 + startAngle - sweepAngle, 1);
   
   // Configure stroke and fill colors
-  CGContextSetStrokeColorWithColor(ctx, [color CGColor]);
-  CGContextSetFillColorWithColor(ctx, [color CGColor]);
+  CGContextSetStrokeColorWithColor(ctx, color);
+  CGContextSetFillColorWithColor(ctx, color);
   CGContextSetLineWidth(ctx, lineWidth);
 
   // Fill and stroke
