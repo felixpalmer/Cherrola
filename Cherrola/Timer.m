@@ -10,6 +10,10 @@
 
 @interface Timer ()
 @property (nonatomic, assign, readwrite) enum TIMERSTATE state;
+
+- (void)willSleepNotification:(NSNotification*) note;
+- (void)willWakeNotification:(NSNotification*) note;
+
 @end
 
 @implementation Timer
@@ -31,9 +35,19 @@ static Timer *_sharedInstance;
 {
   if (self = [super init]) {
     [self setState:OFF];
+
+    // Register with system to be notified when system is put to/awakes from sleep
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver: self
+                                                           selector: @selector(willSleepNotification:)
+                                                               name: NSWorkspaceWillSleepNotification object: NULL];
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver: self
+                                                           selector: @selector(willWakeNotification:)
+                                                               name: NSWorkspaceDidWakeNotification object: NULL];
   }
   return self;
 }
+
+#pragma mark - Timer control methods
 
 - (void)startPomodoro
 {
@@ -125,6 +139,7 @@ static Timer *_sharedInstance;
   [self setState:OFF];
 }
 
+#pragma mark - Timer remaining methods
 - (NSTimeInterval)timeRemaining
 {
   if ([self state] == OFF) {
@@ -137,6 +152,20 @@ static Timer *_sharedInstance;
 - (void)tick
 {
   [[self delegate] tick:[self timeRemaining]];
+}
+
+- (void)willSleepNotification:(NSNotification*) note
+{
+  if ([self state] == POMODORO) {
+    // If we're in the middle of a timer session, just cancel it. It seems safe to assume the user
+    // has given up on the session, and best not to confuse them when returning
+    NSLog(@"Cancelling Pomodoro, as system is going to sleep");
+    [self cancelPomodoro];
+  }
+}
+
+- (void)willWakeNotification:(NSNotification*) note
+{
 }
 
 @end
