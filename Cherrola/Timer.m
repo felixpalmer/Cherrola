@@ -36,7 +36,7 @@ static Timer *_sharedInstance;
   if (self = [super init]) {
     [self setState:OFF];
 
-    // Register with system to be notified when system is put to/awakes from sleep
+    // Register with system to be notified when system is put to/wakes from sleep
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver: self
                                                            selector: @selector(willSleepNotification:)
                                                                name: NSWorkspaceWillSleepNotification object: NULL];
@@ -51,11 +51,16 @@ static Timer *_sharedInstance;
 
 - (void)startPomodoro
 {
+  [self startPomodoro:POMODORO_DURATION];
+}
+
+- (void)startPomodoro:(NSTimeInterval)duration
+{
   if ([self state] != OFF) {
     [NSException raise:@"Invalid timer transition" format:@"Cannot start Pomodoro, Timer in state %u", [self state]];
     return;
   }
-  _timer = [NSTimer scheduledTimerWithTimeInterval:POMODORO_DURATION
+  _timer = [NSTimer scheduledTimerWithTimeInterval:duration
                                             target:self
                                           selector:@selector(endPomodoro)
                                           userInfo:nil
@@ -96,11 +101,16 @@ static Timer *_sharedInstance;
 
 - (void)startRest
 {
+  [self startRest:REST_DURATION];
+}
+
+- (void)startRest:(NSTimeInterval)duration
+{
   if ([self state] != POMODORO_ENDED) {
     [NSException raise:@"Invalid timer transition" format:@"Cannot start rest, Timer in state %u", [self state]];
     return;
   }
-  _timer = [NSTimer scheduledTimerWithTimeInterval:REST_DURATION
+  _timer = [NSTimer scheduledTimerWithTimeInterval:duration
                                             target:self
                                           selector:@selector(endRest)
                                           userInfo:nil
@@ -154,6 +164,7 @@ static Timer *_sharedInstance;
   [[self delegate] tick:[self timeRemaining]];
 }
 
+#pragma mark - Sleep notification methods
 - (void)willSleepNotification:(NSNotification*) note
 {
   if ([self state] == POMODORO) {
@@ -166,6 +177,22 @@ static Timer *_sharedInstance;
 
 - (void)willWakeNotification:(NSNotification*) note
 {
+  if ([self state] == REST) {
+    // System was put to sleep during REST, need to reschedule timer as it was paused.
+    // timeRemainging is still valid though, so use that to reschedule
+    NSTimeInterval timeRemaining = [self timeRemaining];
+    if (timeRemaining < 0) {
+      // If rest is over, cancel the rest
+      NSLog(@"Cancelling rest, as system woke up after end of break");
+      [self cancelRest];
+    } else {
+      // Otherwise, restart the break, but with the remaining time only
+      NSLog(@"Rescheduling rest, as system woke up before end of break");
+      [self cancelRest];
+      [self setState:POMODORO_ENDED];
+      [self startRest:timeRemaining];
+    }
+  }
 }
 
 @end

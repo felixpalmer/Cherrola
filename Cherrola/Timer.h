@@ -44,8 +44,10 @@ enum TIMERSTATE {
 - (NSTimeInterval)timeRemaining;
 
 - (void)startPomodoro;
+- (void)startPomodoro:(NSTimeInterval)duration;
 - (void)cancelPomodoro;
 - (void)startRest;
+- (void)startRest:(NSTimeInterval)duration;
 - (void)cancelRest;
 
 @end
