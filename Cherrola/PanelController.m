@@ -1,7 +1,8 @@
-#import "PanelController.h"
+#import "ApplicationDelegate.h"
 #import "BackgroundView.h"
-#import "StatusItemView.h"
 #import "MenubarController.h"
+#import "PanelController.h"
+#import "StatusItemView.h"
 
 #define OPEN_DURATION .7
 #define CLOSE_DELAY 1.337
@@ -26,9 +27,15 @@
   if (self != nil)
   {
     _delegate = delegate;
-    _timer = [[Timer alloc] initWithDelegate:self];
+    _timer = [Timer sharedInstance];
+    [_timer setDelegate:self];
   }
   return self;
+}
+
+- (void)dealloc
+{
+  _timer = nil;
 }
 
 #pragma mark -
@@ -136,7 +143,7 @@
   panelRect.size.height = screenRect.size.height - statusRect.size.height - 2 * POPUP_PADDING;
   panelRect.origin.x = POPUP_PADDING;
   panelRect.origin.y = NSMaxY(statusRect) - NSHeight(panelRect) - POPUP_PADDING;
-
+  
   // Animate panel onto screen
   panelRect.origin.y -= SLIDE_DISTANCE;
   [NSApp activateIgnoringOtherApps:NO];
@@ -157,15 +164,15 @@
   NSRect panelRect = [[self panel] frame];
   panelRect.origin.y -= SLIDE_DISTANCE;
   
+  // Animate panel off screen
   [NSAnimationContext beginGrouping];
+  [[NSAnimationContext currentContext] setCompletionHandler:^{
+    [self.window orderOut:nil];
+  }];
   [[NSAnimationContext currentContext] setDuration:CLOSE_DURATION];
   [[[self panel] animator] setAlphaValue:0];
   [[[self panel] animator] setFrame:panelRect display:YES];
   [NSAnimationContext endGrouping];
-  
-  dispatch_after(dispatch_walltime(NULL, NSEC_PER_SEC * CLOSE_DURATION * 2), dispatch_get_main_queue(), ^{
-    [self.window orderOut:nil];
-  });
 }
 
 #pragma mark - PanelDelegate methods
@@ -183,8 +190,9 @@
 {
   if ([_timer state] == POMODORO) {
     [_timer cancelPomodoro];
-  } else if ([_timer state] == REST) {
-    [_timer cancelRest];
+    dispatch_after(dispatch_walltime(NULL, NSEC_PER_SEC * CLOSE_DELAY), dispatch_get_main_queue(), ^{
+      [self setHasActivePanel:NO];
+    });
   }
   [[self panel] configureForState:[_timer state]];
 }
@@ -207,6 +215,8 @@
 - (void)tick:(NSTimeInterval)remaining
 {
   [[self panel] setTimeRemaining:remaining];
+  ApplicationDelegate *appDelegate = (ApplicationDelegate*)[NSApp delegate];
+  [[[appDelegate menubarController] statusItemView] setNeedsDisplay:YES];
 }
 
 @end

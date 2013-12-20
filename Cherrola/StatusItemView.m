@@ -1,10 +1,9 @@
 #import "StatusItemView.h"
+#import "Timer.h"
 
 @implementation StatusItemView
 
 @synthesize statusItem = _statusItem;
-@synthesize image = _image;
-@synthesize alternateImage = _alternateImage;
 @synthesize isHighlighted = _isHighlighted;
 @synthesize action = _action;
 @synthesize target = _target;
@@ -13,33 +12,91 @@
 
 - (id)initWithStatusItem:(NSStatusItem *)statusItem
 {
-    CGFloat itemWidth = [statusItem length];
-    CGFloat itemHeight = [[NSStatusBar systemStatusBar] thickness];
-    NSRect itemRect = NSMakeRect(0.0, 0.0, itemWidth, itemHeight);
-    self = [super initWithFrame:itemRect];
-    
-    if (self != nil) {
-        _statusItem = statusItem;
-        _statusItem.view = self;
-    }
-    return self;
+  CGFloat itemWidth = [statusItem length];
+  CGFloat itemHeight = [[NSStatusBar systemStatusBar] thickness];
+  NSRect itemRect = NSMakeRect(0.0, 0.0, itemWidth, itemHeight);
+  self = [super initWithFrame:itemRect];
+  
+  if (self != nil) {
+    _statusItem = statusItem;
+    [_statusItem setView:self];
+  }
+  return self;
 }
 
 
-#pragma mark -
+#pragma mark - Drawing methods
 
 - (void)drawRect:(NSRect)dirtyRect
 {
 	[self.statusItem drawStatusBarBackgroundInRect:dirtyRect withHighlight:self.isHighlighted];
-    
-    NSImage *icon = self.isHighlighted ? self.alternateImage : self.image;
-    NSSize iconSize = [icon size];
-    NSRect bounds = self.bounds;
-    CGFloat iconX = roundf((NSWidth(bounds) - iconSize.width) / 2);
-    CGFloat iconY = roundf((NSHeight(bounds) - iconSize.height) / 2);
-    NSPoint iconPoint = NSMakePoint(iconX, iconY);
+  // Calculate angle of wedge from remaing time
+  CGFloat angle = 2.0 * pi;
+  CGFloat workBreakRatio = (float)POMODORO_DURATION / (float)(POMODORO_DURATION + REST_DURATION);
+  if ([[Timer sharedInstance] state] == POMODORO) {
+    CGFloat timeElapsed = (float)POMODORO_DURATION - [[Timer sharedInstance] timeRemaining];
+    angle = 2.0 * pi * workBreakRatio * (timeElapsed / (float)POMODORO_DURATION);
+  } else if ([[Timer sharedInstance] state] == REST) {
+    CGFloat timeElapsed = (float)REST_DURATION - [[Timer sharedInstance] timeRemaining];
+    angle = 2.0 * pi * (workBreakRatio + (1.0 - workBreakRatio) * (timeElapsed / (float)REST_DURATION));
+  }
 
-	[icon drawAtPoint:iconPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+  // Draw outline circle
+  [self drawArcWithRadius:7.5
+                   center:CGPointMake(self.frame.size.width / 2, 12)
+              highlighted:self.isHighlighted
+                     fill:NO
+                lineWidth:1.337
+               startAngle:0
+               sweepAngle:2 * pi * workBreakRatio];
+
+  // Draw wedge
+  [self drawArcWithRadius:5
+                   center:CGPointMake(self.frame.size.width / 2, 12)
+              highlighted:self.isHighlighted
+                     fill:YES
+                lineWidth:1.337
+               startAngle:0
+               sweepAngle:angle];
+}
+
+- (void)drawArcWithRadius:(CGFloat)radius
+                   center:(CGPoint)center
+              highlighted:(BOOL)highlighted
+                     fill:(BOOL)fill
+                lineWidth:(CGFloat)lineWidth
+               startAngle:(float)startAngle
+               sweepAngle:(float)sweepAngle
+{
+  CGColorRef color = CGColorCreateGenericGray(highlighted ? 1.0: 0.0, 1.0);
+
+  CGContextRef ctx = [[NSGraphicsContext currentContext] graphicsPort];
+  if (!highlighted) {
+  CGContextSetShadowWithColor(ctx,
+                              CGSizeMake(0, -1.0), 0,
+                              CGColorCreateGenericGray(1.0, 0.7));
+  }
+  
+  // Trace out path - measure angles from positive y axis
+  if (fill) {
+    CGContextMoveToPoint(ctx, center.x, center.y);
+    CGContextAddLineToPoint(ctx, center.x, center.y + radius);
+  } else {
+    CGContextMoveToPoint(ctx, center.x, center.y + radius);
+  }
+  CGContextAddArc(ctx, center.x , center.y, radius,
+                  pi / 2 + startAngle, pi / 2 + startAngle - sweepAngle, 1);
+  
+  // Configure stroke and fill colors
+  CGContextSetStrokeColorWithColor(ctx, color);
+  CGContextSetFillColorWithColor(ctx, color);
+  CGContextSetLineWidth(ctx, lineWidth);
+
+  // Fill and stroke
+  if (fill) {
+    CGContextFillPath(ctx);
+  }
+  CGContextStrokePath(ctx);
 }
 
 #pragma mark -
@@ -47,7 +104,7 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-    [NSApp sendAction:self.action to:self.target from:self];
+  [NSApp sendAction:self.action to:self.target from:self];
 }
 
 #pragma mark -
@@ -55,38 +112,18 @@
 
 - (void)setHighlighted:(BOOL)newFlag
 {
-    if (_isHighlighted == newFlag) return;
-    _isHighlighted = newFlag;
-    [self setNeedsDisplay:YES];
-}
-
-#pragma mark -
-
-- (void)setImage:(NSImage *)newImage
-{
-    if (_image != newImage) {
-        _image = newImage;
-        [self setNeedsDisplay:YES];
-    }
-}
-
-- (void)setAlternateImage:(NSImage *)newImage
-{
-    if (_alternateImage != newImage) {
-        _alternateImage = newImage;
-        if (self.isHighlighted) {
-            [self setNeedsDisplay:YES];
-        }
-    }
+  if (_isHighlighted == newFlag) return;
+  _isHighlighted = newFlag;
+  [self setNeedsDisplay:YES];
 }
 
 #pragma mark -
 
 - (NSRect)globalRect
 {
-    NSRect frame = [self frame];
-    frame.origin = [self.window convertBaseToScreen:frame.origin];
-    return frame;
+  NSRect frame = [self frame];
+  frame.origin = [self.window convertBaseToScreen:frame.origin];
+  return frame;
 }
 
 @end

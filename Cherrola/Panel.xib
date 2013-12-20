@@ -35,8 +35,8 @@
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" id="0Jy-Ej-WHa">
-                        <rect key="frame" x="525" y="31" width="400" height="102"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
+                        <rect key="frame" x="300" y="31" width="400" height="102"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="smallSquare" title="Cancel" bezelStyle="smallSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xcL-f9-VcV">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" size="52" name="Helvetica"/>
@@ -46,8 +46,8 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" id="41X-bP-bX7">
-                        <rect key="frame" x="75" y="31" width="400" height="102"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <rect key="frame" x="300" y="31" width="400" height="102"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="smallSquare" title="Start" bezelStyle="smallSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ObG-ju-y6L">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" size="52" name="Helvetica"/>
