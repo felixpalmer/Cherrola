@@ -27,7 +27,6 @@
 
 - (void)configureForState:(enum TIMERSTATE)state
 {
-  NSLog(@"state %u", state);
   [NSAnimationContext beginGrouping];
   [[NSAnimationContext currentContext] setDuration:FADE_DURATION];
   switch (state) {
