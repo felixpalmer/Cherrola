@@ -183,8 +183,8 @@ static Timer *_sharedInstance;
     NSTimeInterval timeRemaining = [self timeRemaining];
     if (timeRemaining < 0) {
       // If rest is over, cancel the rest
-      NSLog(@"Cancelling rest, as system woke up after end of break");
-      [self cancelRest];
+      NSLog(@"Ending rest, as system woke up after end of break");
+      [self endRest];
     } else {
       // Otherwise, restart the break, but with the remaining time only
       NSLog(@"Rescheduling rest, as system woke up before end of break");
