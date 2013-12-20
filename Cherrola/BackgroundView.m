@@ -1,6 +1,6 @@
 #import "BackgroundView.h"
 
-#define FILL_OPACITY 0.9f
+#define FILL_OPACITY 0.95f
 #define STROKE_OPACITY 1.0f
 
 #define LINE_THICKNESS 2.0f
