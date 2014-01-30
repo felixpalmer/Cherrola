@@ -41,10 +41,19 @@
     angle = 2.0 * pi * (workBreakRatio + (1.0 - workBreakRatio) * (timeElapsed / (float)REST_DURATION));
   }
 
+  CGColorRef color;
+  if ([[Timer sharedInstance] state] == POMODORO && [[Timer sharedInstance] timeRemaining] < 60) {
+    // Highlight in red during last minute
+    color = CGColorCreateGenericRGB(0.8, 0.0, 0.0, 1.0);
+  } else {
+    color = CGColorCreateGenericGray(self.isHighlighted ? 1.0: 0.0, 1.0);
+  }
+
   // Draw outline circle
   [self drawArcWithRadius:7.5
                    center:CGPointMake(self.frame.size.width / 2, 12)
-              highlighted:self.isHighlighted
+                    color:color
+                   shadow:!self.isHighlighted
                      fill:NO
                 lineWidth:1.337
                startAngle:0
@@ -53,7 +62,8 @@
   // Draw wedge
   [self drawArcWithRadius:5
                    center:CGPointMake(self.frame.size.width / 2, 12)
-              highlighted:self.isHighlighted
+                    color:color
+                   shadow:!self.isHighlighted
                      fill:YES
                 lineWidth:1.337
                startAngle:0
@@ -62,16 +72,15 @@
 
 - (void)drawArcWithRadius:(CGFloat)radius
                    center:(CGPoint)center
-              highlighted:(BOOL)highlighted
+                    color:(CGColorRef)color
+                   shadow:(BOOL)highlighted
                      fill:(BOOL)fill
                 lineWidth:(CGFloat)lineWidth
                startAngle:(float)startAngle
                sweepAngle:(float)sweepAngle
 {
-  CGColorRef color = CGColorCreateGenericGray(highlighted ? 1.0: 0.0, 1.0);
-
   CGContextRef ctx = [[NSGraphicsContext currentContext] graphicsPort];
-  if (!highlighted) {
+  if (shadow) {
   CGContextSetShadowWithColor(ctx,
                               CGSizeMake(0, -1.0), 0,
                               CGColorCreateGenericGray(1.0, 0.7));
